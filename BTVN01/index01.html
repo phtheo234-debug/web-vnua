@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Tạ Phương Thảo</title>
+  </head>
+  <body>
+    <form>
+      <label for="textarea">Textarea</label>
+      <br />
+      <input type="text" id="text-area" name="textarea" maxlength="140" />
+      <p id="cmax-ta">Max 0/140</p>
+      <br />
+      <label for="inputfield">Input Field</label>
+      <br />
+      <input type="text" id="input-field" name="inputfielda" maxlength="20" />
+      <p id="cmax-if">Max 0/20</p>
+    </form>
+    <!-- count -->
+    <script>
+      const otextarea = document.querySelector("#text-area");
+      const oinputfield = document.querySelector("#input-field");
+      const cmaxta = document.querySelector("#cmax-ta");
+      const cmaxif = document.querySelector("#cmax-if");
+      otextarea.addEventListener("input", () => {
+        cmaxta.textContent = "Max " + otextarea.value.length + "/140";
+      });
+      oinputfield.addEventListener("input", () => {
+        cmaxif.textContent = "Max " + oinputfield.value.length + "/20";
+      });
+    </script>
+  </body>
+</html>
