@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tạ Phương Thảo</title>
+
     <style>
       body {
         max-width: 800px;
@@ -30,73 +31,106 @@
       }
 
       #ds li {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         border-bottom: 1px solid #eee;
         padding: 8px 0;
       }
 
-      #ds button {
+      #ds span {
         cursor: pointer;
+      }
+
+      #ds .da-mua {
+        text-decoration: line-through;
+        color: gray;
       }
     </style>
   </head>
   <body>
     <h1>Danh sách đi chợ</h1>
+
     <div class="demo-box">
       <form id="form">
         <label for="o-ten">Tên món</label>
-        <input type="text" name="" id="o-ten" placeholder="VD: pizza" required />
+        <input type="text" id="o-ten" placeholder="VD: pizza" required />
         <button type="submit">Thêm món</button>
       </form>
+      <p id="thong-ke">Còn 0/0 món chưa mua</p>
       <ul id="ds"></ul>
-      <br />
-      <h2>Chưa mua</h2>
-      <ul id="ds-chua-mua"></ul>
     </div>
+
     <script>
       const form = document.querySelector("#form");
       const oTen = document.querySelector("#o-ten");
       const ds = document.querySelector("#ds");
-      const dscmua = document.querySelector("#ds-chua-mua");
+      const thongKe = document.querySelector("#thong-ke");
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault(); //không để trang tải lại
-        const ten = oTen.value.trim();
-        if (ten === "") return; //tên null bỏ qua
+      // Lấy danh sách đã lưu
+      let danhSach = JSON.parse(localStorage.getItem("danhSachDiCho") || "[]");
 
-        //tao dong moi
-        const li = document.createElement("li");
+      // Hiển thị danh sách và thống kê
+      function hienThi() {
+        ds.innerHTML = "";
 
-        //tạo danh sách chưa mua
-        const chuaMua = document.createElement("li");
-        chuaMua.textContent = ten;
+        danhSach.forEach((mon, index) => {
+          const li = document.createElement("li");
+          const span = document.createElement("span");
 
-        //đánh dấu đã mua, click 2 lần->xóa
-        const daMua = document.createElement("span");
-        daMua.textContent = ten;
-        daMua.addEventListener("click", () => {
-          if (daMua.innerHTML === ten) {
-            daMua.innerHTML = "<del>" + ten + "</del>";
-            chuaMua.remove();
-          } else {
-            daMua.textContent = ten;
-            dscmua.append(chuaMua);
+          span.textContent = mon.ten;
+
+          if (mon.daMua) {
+            span.classList.add("da-mua");
           }
-        });
-        daMua.addEventListener("dblclick", () => {
-          li.remove();
-          chuaMua.remove();
+
+          // Bấm một lần: đổi trạng thái đã mua
+          span.addEventListener("click", () => {
+            danhSach[index].daMua = !danhSach[index].daMua;
+            luuDanhSach();
+            hienThi();
+          });
+
+          // Nháy đúp: xóa món
+          span.addEventListener("dblclick", () => {
+            danhSach.splice(index, 1);
+            luuDanhSach();
+            hienThi();
+          });
+
+          li.append(span);
+          ds.append(li);
         });
 
-        li.append(daMua);
-        ds.append(li);
-        dscmua.append(chuaMua);
+        const chuaMua = danhSach.filter((mon) => !mon.daMua).length;
 
-        oTen.value = ""; //clear Input
-        oTen.focus(); //Sẵn sàng gõ món tiếp theo
+        thongKe.textContent = "Còn " + chuaMua + "/" + danhSach.length + " món chưa mua";
+      }
+
+      // Lưu danh sách vào localStorage
+      function luuDanhSach() {
+        localStorage.setItem("danhSachDiCho", JSON.stringify(danhSach));
+      }
+
+      // Thêm món
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const ten = oTen.value.trim();
+
+        if (ten === "") return;
+
+        danhSach.push({
+          ten: ten,
+          daMua: false,
+        });
+
+        luuDanhSach();
+        hienThi();
+
+        oTen.value = "";
+        oTen.focus();
       });
+
+      // Hiển thị dữ liệu khi mở trang
+      hienThi();
     </script>
   </body>
 </html>
