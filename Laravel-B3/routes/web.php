@@ -1,49 +1,32 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 
-Route::get('/', function () {
-    $posts = [
-        [
-            'category' => 'Du lịch',
-            'title' => 'Một ngày bình yên ở Đà Lạt',
-            'excerpt' => 'Đôi khi, điều chúng ta cần chỉ là một chuyến đi ngắn, một tách cà phê ấm và chút thời gian dành cho bản thân.',
-            'author' => 'Thảo',
-            'date' => '24/10/2026',
-            'image' => 'images/a1.jpg'
-        ],
-        [
-            'category' => 'Phong cách sống',
-            'title' => 'Bắt đầu ngày mới với những thói quen nhỏ',
-            'excerpt' => 'Một buổi sáng nhẹ nhàng có thể giúp bạn sắp xếp suy nghĩ và làm việc hiệu quả hơn.',
-            'author' => 'Thảo và Trang',
-            'date' => '22/10/2026',
-            'image' => 'images/a2.jpg'
-        ],
-        [
-            'category' => 'Ẩm thực',
-            'title' => 'Góc cà phê nhỏ cho ngày cuối tuần',
-            'excerpt' => 'Một góc thư giãn để đọc sách, nghe nhạc và tận hưởng ngày không vội vã.',
-            'author' => 'Thảo',
-            'date' => '20/10/2026',
-            'image' => 'images/a3.jpg'
-        ],
-        [
-            'category' => 'Cảm hứng',
-            'title' => 'Học cách yêu những điều giản dị',
-            'excerpt' => 'Niềm vui đôi khi đến từ những điều rất nhỏ mà ta thường vô tình bỏ qua.',
-            'author' => 'Thảo và Tình',
-            'date' => '18/10/2026',
-            'image' => 'images/a4.jpg'
-        ]
-    ];
+// Route trang chủ
+Route::get('/', [PostController::class, 'index']);
 
-    $categories = [
-        'Du lịch',
-        'Phong cách sống',
-        'Ẩm thực',
-        'Cảm hứng'
-    ];
+// Nhóm các Route quản lý bài viết
+Route::prefix('post')->name('post.')->group(function () {
+    
+    // 1. Danh sách bài viết & bộ lọc
+    Route::get('/', [PostController::class, 'index'])->name('index');
+    Route::get('/user2', [PostController::class, 'user2'])->name('user2');
 
-    return view('home', compact('posts', 'categories'));
+    // 2. Thêm bài viết mới
+    Route::get('/create', [PostController::class, 'create'])->name('create');
+    Route::post('/', [PostController::class, 'store'])->name('store');
+
+    // 3. Quản lý Thùng rác (phải đặt trước route có tham số {id})
+    Route::get('/trashed', [PostController::class, 'trashed'])->name('trashed');
+    Route::patch('/{id}/restore', [PostController::class, 'restore'])->name('restore');
+    Route::delete('/{id}/force-delete', [PostController::class, 'forceDelete'])->name('forceDelete');
+
+    // 4. Chỉnh sửa & Xóa bài viết
+    Route::get('/{id}/edit', [PostController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PostController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PostController::class, 'destroy'])->name('destroy');
+
+    // 5. Xem chi tiết bài viết (luôn đặt ở cuối cùng)
+    Route::get('/{id}', [PostController::class, 'show'])->name('show');
 });
