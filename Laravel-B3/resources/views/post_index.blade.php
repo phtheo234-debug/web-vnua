@@ -13,12 +13,14 @@
         </div>
     @endif
 
-    <a href="{{ route('post.create') }}" class="btn btn-primary mb-3">
-        + Thêm bài viết
-    </a>
+    @auth
+        <a href="{{ route('post.create') }}" class="btn btn-primary mb-3">
+            + Thêm bài viết
+        </a>
+    @endauth
 
     <div class="table-responsive">
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped align-middle">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -38,9 +40,10 @@
 
                         <td>
                             @if($post->image)
-                                <img src="{{ asset($post->image) }}"
+                                <img src="{{ asset('images/' . $post->image) }}"
                                      alt="{{ $post->title }}"
-                                     width="80">
+                                     width="80" 
+                                     class="img-thumbnail">
                             @endif
                         </td>
 
@@ -50,22 +53,30 @@
                         <td>{{ $post->post_date }}</td>
 
                         <td>
-                            <a href="{{ route('post.edit', $post->id) }}"
-                               class="btn btn-warning btn-sm">
-                                Sửa
-                            </a>
+                            @auth
+                                @if($post->user_id === auth()->id())
+                                    <a href="{{ route('post.edit', $post->id) }}"
+                                       class="btn btn-warning btn-sm">
+                                        Sửa
+                                    </a>
 
-                            <form action="{{ route('post.destroy', $post->id) }}"
-                                  method="POST"
-                                  style="display:inline"
-                                  onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?')">
-                                @csrf
-                                @method('DELETE')
+                                    <form action="{{ route('post.destroy', $post->id) }}"
+                                          method="POST"
+                                          style="display:inline"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?')">
+                                        @csrf
+                                        @method('DELETE')
 
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Xóa
-                                </button>
-                            </form>
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="badge bg-secondary">Không có quyền</span>
+                                @endif
+                            @else
+                                <span class="badge bg-light text-dark">Xem</span>
+                            @endauth
                         </td>
                     </tr>
                 @empty

@@ -23,7 +23,7 @@
     </div>
 
     <div class="sidebar-box quote-box">
-        <p>"Đi một ngày đàng, một sàng mệt mỏi...thế nào mà lại vui!"</p>
+        <p>"một hai ba bốn năm sáu bảy"</p>
     </div>
 
 </aside>

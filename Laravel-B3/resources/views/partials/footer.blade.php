@@ -5,6 +5,6 @@
 
         <p>123 ABC, Hà Nội</p>
 
-        <small>BTVN 24/10/26</small>
+        <small>BTVN 27/10/26</small>
     </div>
 </footer>

@@ -9,19 +9,41 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainMenu">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto align-items-center">
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ url('/') }}">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#bai-viet">Bài viết</a>
+                        <a class="nav-link" href="{{ url('/') }}#bai-viet">Bài viết</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#danh-muc">Danh mục</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item mr-3">
                         <a class="nav-link" href="#lien-he">Liên hệ</a>
                     </li>
+
+                    @auth
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Đăng xuất
+                                </button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item mr-2">
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary">
+                                Đăng nhập
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('register') }}" class="btn btn-sm btn-primary">
+                                Đăng ký
+                            </a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </nav>

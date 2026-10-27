@@ -16,11 +16,8 @@
         </div>
     @endif
 
-    <!-- Bổ sung enctype="multipart/form-data" để upload file -->
     <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
-        <input type="hidden" name="user_id" value="1">
 
         <div class="mb-3">
             <label class="form-label">Danh mục</label>
@@ -36,13 +33,13 @@
 
         <div class="mb-3">
             <label class="form-label">Nội dung tóm tắt</label>
-            <textarea name="excerpt" class="form-control">{{ old('excerpt') }}</textarea>
+            <textarea name="excerpt" class="form-control" rows="4">{{ old('excerpt') }}</textarea>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Tác giả</label>
             <input name="author" class="form-control"
-                   value="{{ old('author', 'Minh Anh') }}" required>
+                   value="{{ old('author', auth()->user()->name ?? 'Minh Anh') }}" required>
         </div>
 
         <div class="mb-3">
@@ -52,12 +49,12 @@
         </div>
 
         <div class="mb-3">
-        <label class="form-label">Ảnh bài viết</label>
-        <input type="file" name="image" class="form-control" accept="image/*">
-        <small class="text-muted">Chọn ảnh từ máy tính. Nếu là ảnh mới sẽ tự động lưu tên theo Datetime Seri, nếu ảnh đã có sẵn trong hệ thống sẽ tự động nhận diện.</small>
+            <label class="form-label">Ảnh bài viết</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="text-muted">Chọn ảnh từ máy tính. Ảnh tải lên sẽ tự động lưu tên theo Datetime Seri.</small>
         </div>
 
-        <button class="btn btn-success">Lưu bài viết</button>
+        <button type="submit" class="btn btn-success">Lưu bài viết</button>
         <a href="{{ route('post.index') }}" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>

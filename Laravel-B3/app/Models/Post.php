@@ -24,11 +24,7 @@ class Post extends Model
 
     public function getImageUrlAttribute()
     {
-        if (!$this->image) {
-            return asset('images/a0.jpg'); // Ảnh mặc định nếu bài viết không có ảnh
-        }
 
-        // Nếu trong DB đã có chữ 'images/' thì dùng thẳng, nếu chưa có thì nối thêm 'images/'
         if (str_starts_with($this->image, 'images/')) {
             return asset($this->image);
         }
@@ -45,5 +41,10 @@ class Post extends Model
     public function categories()
     {
         return $this->belongsTo('Categories', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

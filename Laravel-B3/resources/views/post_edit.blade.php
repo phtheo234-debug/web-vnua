@@ -20,8 +20,6 @@
         @csrf
         @method('PUT')
 
-        <input type="hidden" name="user_id" value="{{ $post->user_id }}">
-
         <div class="mb-3">
             <label class="form-label">Danh mục</label>
             <input name="category" class="form-control"
@@ -36,7 +34,7 @@
 
         <div class="mb-3">
             <label class="form-label">Nội dung tóm tắt</label>
-            <textarea name="excerpt" class="form-control">{{ old('excerpt', $post->excerpt) }}</textarea>
+            <textarea name="excerpt" class="form-control" rows="4">{{ old('excerpt', $post->excerpt) }}</textarea>
         </div>
 
         <div class="mb-3">
@@ -51,14 +49,24 @@
                    value="{{ old('post_date', $post->post_date) }}" required>
         </div>
 
-        <!-- Xem trước ảnh hiện tại -->
         <div class="mb-3">
-        <label class="form-label">Ảnh bài viết</label>
-        <input type="file" name="image" class="form-control" accept="image/*">
-        <small class="text-muted">Chọn ảnh từ máy tính. Nếu là ảnh mới sẽ tự động lưu tên theo Datetime Seri, nếu ảnh đã có sẵn trong hệ thống sẽ tự động nhận diện.</small>
+            <label class="form-label">Ảnh bài viết</label>
+            
+            @if($post->image)
+                <div class="mb-2">
+                    <span class="d-block text-muted mb-1">Ảnh hiện tại:</span>
+                    <img src="{{ asset('images/' . $post->image) }}" 
+                         alt="{{ $post->title }}" 
+                         style="max-height: 150px; object-fit: cover;" 
+                         class="img-thumbnail">
+                </div>
+            @endif
+
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="text-muted">Bỏ trống nếu muốn giữ lại ảnh cũ. Nếu chọn ảnh mới, hệ thống sẽ tự động lưu tên theo Datetime Seri.</small>
         </div>
 
-        <button class="btn btn-primary">Cập nhật bài viết</button>
+        <button type="submit" class="btn btn-primary">Cập nhật bài viết</button>
         <a href="{{ route('post.index') }}" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>
