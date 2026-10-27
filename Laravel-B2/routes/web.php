@@ -8,6 +8,7 @@ Route::get('/', [ProductController::class, 'index']);
 Route::post('/', [ProductController::class, 'create'])->name('post.store');
 
 
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
