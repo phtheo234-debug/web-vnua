@@ -24,13 +24,19 @@
                     </li>
 
                     @auth
+                        <li class="nav-item mr-2">
+                            <a href="{{ route('password.change') }}" class="btn btn-sm btn-outline-secondary">
+                                Đổi mật khẩu
+                            </a>
+                        </li>
                         <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            <form action="{{ route('logout') }}" method="POST" class="d-none" id="logout-form">
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    Đăng xuất
-                                </button>
                             </form>
+                            <a href="{{ route('logout') }}" class="btn btn-sm btn-outline-danger" 
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Đăng xuất
+                            </a>
                         </li>
                     @else
                         <li class="nav-item mr-2">

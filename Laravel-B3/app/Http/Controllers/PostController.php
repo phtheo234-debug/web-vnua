@@ -10,13 +10,19 @@ class PostController extends Controller
 {
     public function index()
     {
+        // Lấy danh sách bài viết
         $posts = Post::orderBy('post_date', 'desc')->get();
 
+        // Lấy danh sách danh mục
         $categories = DB::table('categories')
             ->orderBy('name')
             ->pluck('name');
 
-        return view('home', compact('posts', 'categories'));
+        // Truyền dữ liệu sang giao diện
+        return view('home', [
+            'posts' => $posts,
+            'categories' => $categories,
+        ]);
     }
 
     public function show($id)
