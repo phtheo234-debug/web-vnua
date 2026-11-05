@@ -26,9 +26,114 @@ CREATE TABLE `categories` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `categories` */
+
+insert  into `categories`(`id`,`name`,`created_at`,`updated_at`) values 
+(1,'Du lịch','2026-11-06 00:01:21','2026-11-06 00:01:21'),
+(2,'Phong cách sống','2026-11-06 00:01:21','2026-11-06 00:01:21'),
+(3,'Ẩm thực','2026-11-06 00:01:21','2026-11-06 00:01:21'),
+(4,'Cảm hứng','2026-11-06 00:01:21','2026-11-06 00:01:21');
+
+/*Table structure for table `comments` */
+
+DROP TABLE IF EXISTS `comments`;
+
+CREATE TABLE `comments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `post_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `comments_post_id_foreign` (`post_id`),
+  KEY `comments_user_id_foreign` (`user_id`),
+  CONSTRAINT `comments_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `comments` */
+
+insert  into `comments`(`id`,`post_id`,`user_id`,`content`,`created_at`,`updated_at`) values 
+(2,9,11,'tuyệt vời','2026-11-05 17:59:51','2026-11-05 17:59:51'),
+(3,10,11,'yes','2026-11-05 18:04:29','2026-11-05 18:04:29');
+
+/*Table structure for table `failed_jobs` */
+
+DROP TABLE IF EXISTS `failed_jobs`;
+
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `failed_jobs` */
+
+/*Table structure for table `migrations` */
+
+DROP TABLE IF EXISTS `migrations`;
+
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `migrations` */
+
+insert  into `migrations`(`id`,`migration`,`batch`) values 
+(1,'2014_10_12_000000_create_users_table',1),
+(2,'2014_10_12_100000_create_password_resets_table',1),
+(3,'2019_08_19_000000_create_failed_jobs_table',1),
+(4,'2019_12_14_000001_create_personal_access_tokens_table',1),
+(5,'2026_11_05_155402_add_slug_to_posts_table',1),
+(6,'2026_11_05_164932_add_role_to_users_table',1),
+(7,'2026_11_05_165158_create_posts_table',1),
+(8,'2026_11_05_165205_create_comments_table',1);
+
+/*Table structure for table `password_resets` */
+
+DROP TABLE IF EXISTS `password_resets`;
+
+CREATE TABLE `password_resets` (
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `password_resets` */
+
+/*Table structure for table `personal_access_tokens` */
+
+DROP TABLE IF EXISTS `personal_access_tokens`;
+
+CREATE TABLE `personal_access_tokens` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `tokenable_type` varchar(255) NOT NULL,
+  `tokenable_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `abilities` text DEFAULT NULL,
+  `last_used_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
+  KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `personal_access_tokens` */
 
 /*Table structure for table `posts` */
 
@@ -36,31 +141,30 @@ DROP TABLE IF EXISTS `posts`;
 
 CREATE TABLE `posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `category` varchar(100) NOT NULL,
+  `category` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   `excerpt` text DEFAULT NULL,
-  `author` varchar(100) NOT NULL,
+  `author` varchar(255) NOT NULL,
   `post_date` date NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `posts_user_id_foreign` (`user_id`),
+  CONSTRAINT `posts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `posts` */
 
-insert  into `posts`(`id`,`category`,`title`,`excerpt`,`author`,`post_date`,`image`,`created_at`,`updated_at`,`user_id`,`deleted_at`) values 
-(1,'Du lịch','Một ngày bình yên ở Đà Lạt','Đôi khi, điều chúng ta cần chỉ là một chuyến đi ngắn, một tách cà phê ấm và chút thời gian dành cho bản thân.','Minh Anh','2026-10-24','images/a1.jpg',NULL,NULL,2,NULL),
-(2,'Phong cách sống','Bắt đầu ngày mới với những thói quen nhỏ','Một buổi sáng nhẹ nhàng có thể giúp bạn sắp xếp suy nghĩ và làm việc hiệu quả hơn.','Minh Anh','2026-10-22','images/a2.jpg',NULL,NULL,2,NULL),
-(3,'Ẩm thực','Góc cà phê nhỏ cho ngày cuối tuần','Một góc thư giãn để đọc sách, nghe nhạc và tận hưởng ngày không vội vã.','Thu Hà','2026-10-20','images/a3.jpg',NULL,NULL,2,NULL),
-(4,'Cảm hứng','Học cách yêu những điều giản dị','Niềm vui đôi khi đến từ những điều rất nhỏ mà ta thường vô tình bỏ qua.','Hoàng Nam','2026-10-18','images/a4.jpg',NULL,NULL,2,NULL),
-(5,'âss','âs','ád','Minh','2026-10-25','images/a2.jpg','2026-10-25 04:55:40','2026-10-25 05:07:20',1,'2026-10-25 05:07:20'),
-(6,'thaocute','mnb','nb','Minh Anh','2026-10-25','20261027114629_6ae08f155d230.jpg','2026-10-25 05:07:35','2026-10-27 11:46:29',1,NULL),
-(7,'ád','adda','àgdf','Minh Anhđàc','2026-10-25','a1.jpg','2026-10-25 07:49:54','2026-10-25 07:49:54',1,NULL),
-(8,'mnvhgc','mnvb','mvcg','Minh gfd','2026-10-25','20261025080449_6addb82142d14.jpg','2026-10-25 08:04:49','2026-10-25 08:04:49',1,NULL),
-(9,'htdr','khjgy','nhjgyt','thao','2026-10-27','20261027114857_6ae08fa967b40.jpg','2026-10-27 11:48:57','2026-10-27 11:48:57',1,NULL);
+insert  into `posts`(`id`,`category`,`title`,`slug`,`excerpt`,`author`,`post_date`,`image`,`user_id`,`deleted_at`,`created_at`,`updated_at`) values 
+(6,'Ẩm thực','Buổi sáng chan hòa cùng ly coffee',NULL,'Âm thanh của Hà Nội tươi mới cùng với ly coffee sánh mịn ngọt ngào tạo nên một cảm giác thư giãn.','Thảo','2026-11-05','20261105172651_6aecbc5b52d1f.jpg',10,NULL,'2026-11-05 17:26:51','2026-11-05 17:26:51'),
+(7,'Cảm hứng','Ngày bình yên',NULL,'Không phải đi đâu xa để học hỏi kiến thức. Đôi khi xung quanh ta còn nhiều điều tưởng giản dị mà khó có được ở nơi khác','Phương Anh','2026-11-05','20261105172927_6aecbcf7f222d.jpg',10,NULL,'2026-11-05 17:29:27','2026-11-05 17:29:27'),
+(8,'Du lịch','Một ngày bình yên ở Đà Lạt',NULL,'Đi tới Đà Lạt tưởng chừng đông đúc bộn bề nhưng nhịp sống nơi đây lại diễn ra một cách hài hòa như một bản tình ca ngọt ngào','Duy Nam','2026-11-05','20261105173126_6aecbd6ef2651.jpg',10,NULL,'2026-11-05 17:31:26','2026-11-05 17:31:26'),
+(9,'Phong cách sống','Sống hết mình, không theo quy chuẩn xã hội',NULL,'Sao phải sống dập khuôn khi cuộc đời của ta chính là của ta! Tự tin, bản lĩnh thì sẽ có cuộc sống tràn đầy niềm vui!','Nhật Ánh','2026-11-06','20261105173425_6aecbe219992b.jpg',10,NULL,'2026-11-05 17:34:25','2026-11-05 17:34:25'),
+(10,'Phong cách sống','vip',NULL,'abc','Thảo','2026-11-05','20261105180409_6aecc519ecec3.jpg',11,NULL,'2026-11-05 18:04:09','2026-11-05 18:04:09');
 
 /*Table structure for table `users` */
 
@@ -70,17 +174,21 @@ CREATE TABLE `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL DEFAULT 'member',
+  `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`name`,`email`,`password`,`created_at`,`updated_at`) values 
-(1,'thao','123@gmail.com','$2y$10$dc9HBZeYHMScYrE7.wzKau4Z63sGZsW/mZ2oahox8bSSOMLKX4NqG','2026-10-27 11:46:01','2026-10-27 11:46:01');
+insert  into `users`(`id`,`name`,`email`,`role`,`email_verified_at`,`password`,`remember_token`,`created_at`,`updated_at`) values 
+(10,'Quản Trị Viên','admin@gmail.com','admin',NULL,'$2y$10$QeRwtHHTg8oDv2V4z8noY.AMxRCCOTmfYhyZJf72nGtMltkP1BV2u',NULL,'2026-11-05 17:23:18','2026-11-05 17:23:18'),
+(11,'Thảo','123@gmail.com','member',NULL,'$2y$10$3ju29IHGF2N1cKK00b8P2.Ba8eg9Qqd5dg/IY32W0NRfO/wxE8DvW',NULL,'2026-11-05 17:59:27','2026-11-05 17:59:27');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

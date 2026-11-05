@@ -19,10 +19,16 @@
     <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
+        <!-- Thay thế ô input danh mục thành thẻ select dropdown -->
         <div class="mb-3">
             <label class="form-label">Danh mục</label>
-            <input name="category" class="form-control"
-                   value="{{ old('category') }}" required>
+            <select name="category" class="form-control" required>
+                <option value="">-- Chọn danh mục --</option>
+                <option value="Du lịch" {{ old('category') == 'Du lịch' ? 'selected' : '' }}>Du lịch</option>
+                <option value="Phong cách sống" {{ old('category') == 'Phong cách sống' ? 'selected' : '' }}>Phong cách sống</option>
+                <option value="Ẩm thực" {{ old('category') == 'Ẩm thực' ? 'selected' : '' }}>Ẩm thực</option>
+                <option value="Cảm hứng" {{ old('category') == 'Cảm hứng' ? 'selected' : '' }}>Cảm hứng</option>
+            </select>
         </div>
 
         <div class="mb-3">

@@ -20,10 +20,16 @@
         @csrf
         @method('PUT')
 
+        <!-- Thay thế ô input danh mục thành thẻ select dropdown với 4 danh mục cố định -->
         <div class="mb-3">
             <label class="form-label">Danh mục</label>
-            <input name="category" class="form-control"
-                   value="{{ old('category', $post->category) }}" required>
+            <select name="category" class="form-control" required>
+                <option value="">-- Chọn danh mục --</option>
+                <option value="Du lịch" {{ old('category', $post->category) == 'Du lịch' ? 'selected' : '' }}>Du lịch</option>
+                <option value="Phong cách sống" {{ old('category', $post->category) == 'Phong cách sống' ? 'selected' : '' }}>Phong cách sống</option>
+                <option value="Ẩm thực" {{ old('category', $post->category) == 'Ẩm thực' ? 'selected' : '' }}>Ẩm thực</option>
+                <option value="Cảm hứng" {{ old('category', $post->category) == 'Cảm hứng' ? 'selected' : '' }}>Cảm hứng</option>
+            </select>
         </div>
 
         <div class="mb-3">
