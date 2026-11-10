@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
-    // Lưu bình luận mới
     public function store(Request $request, $postId)
     {
         $request->validate([
@@ -25,7 +24,7 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        // Gửi email thông báo qua Queue cho tác giả bài viết (nếu tác giả có email và khác người bình luận)
+        // Gửi email thông báo qua Queue cho tác giả bài viết
         if ($post->user && $post->user->email && $post->user->id !== auth()->id()) {
             Mail::to($post->user->email)->queue(new CommentNotificationMail($comment));
         }
@@ -38,7 +37,7 @@ class CommentController extends Controller
     {
         $comment = Comment::with('post')->findOrFail($id);
 
-        // Kiểm tra quyền xóa: chủ bình luận, tác giả bài viết, hoặc quản trị viên (admin)
+        // Kiểm tra quyền xóa
         $isCommentOwner = $comment->user_id === auth()->id();
         $isPostOwner = $comment->post && $comment->post->user_id === auth()->id();
         $isAdmin = auth()->check() && (auth()->user()->role ?? '') === 'admin';

@@ -5,26 +5,56 @@
 @section('content')
 <div class="container py-5">
 
-    <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark mb-1">Quản lý bài viết</h2>
-            <p class="text-muted small mb-0">Quản lý, chỉnh sửa và xuất bản các bài viết của bạn trên BLOG-WORLD.</p>
+            <h2 class="fw-bold text-dark mb-1">Quản lý bài viết cá nhân</h2>
+            <p class="text-muted small mb-0">Quản lý, chỉnh sửa, theo dõi trạng thái và xuất bản bài viết của bạn.</p>
         </div>
         @auth
-            <a href="{{ route('post.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
-                <i class="fas fa-plus me-1"></i> Thêm bài viết mới
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('post.trashed') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                    <i class="fas fa-trash-alt me-1"></i> Thùng rác
+                </a>
+                <a href="{{ route('post.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    <i class="fas fa-plus me-1"></i> Viết bài mới
+                </a>
+            </div>
         @endauth
     </div>
 
-    <!-- Alert Message -->
     @if(session('message'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
             <i class="fas fa-check-circle me-2"></i> {{ session('message') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+
+    <ul class="nav nav-pills mb-4 gap-2">
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4 {{ request('status') == '' ? 'active bg-primary text-white' : 'bg-light text-dark' }}" 
+               href="{{ route('post.index') }}">
+               Tất cả
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4 {{ request('status') == 'published' ? 'active bg-success text-white' : 'bg-light text-dark' }}" 
+               href="{{ route('post.index', ['status' => 'published']) }}">
+               Đã đăng
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4 {{ request('status') == 'draft' ? 'active bg-secondary text-white' : 'bg-light text-dark' }}" 
+               href="{{ route('post.index', ['status' => 'draft']) }}">
+               Bản nháp
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4 {{ request('status') == 'scheduled' ? 'active bg-warning text-dark' : 'bg-light text-dark' }}" 
+               href="{{ route('post.index', ['status' => 'scheduled']) }}">
+               Hẹn giờ đăng
+            </a>
+        </li>
+    </ul>
 
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
@@ -34,10 +64,9 @@
                     <tr>
                         <th class="py-3 ps-4">ID</th>
                         <th class="py-3">Ảnh</th>
-                        <th class="py-3">Tiêu đề</th>
+                        <th class="py-3">Tiêu đề & Trạng thái</th>
                         <th class="py-3">Danh mục</th>
-                        <th class="py-3">Tác giả</th>
-                        <th class="py-3">Ngày đăng</th>
+                        <th class="py-3">Ngày đăng / Hẹn giờ</th>
                         <th class="py-3 text-end pe-4">Thao tác</th>
                     </tr>
                 </thead>
@@ -61,9 +90,19 @@
                             </td>
 
                             <td>
-                                <span class="fw-bold text-dark text-truncate d-inline-block" style="max-width: 250px;">
+                                <div class="fw-bold text-dark text-truncate mb-1" style="max-width: 250px;">
                                     {{ $post->title }}
-                                </span>
+                                </div>
+                                <!-- Hiển thị Badge trạng thái bài viết -->
+                                <div>
+                                    @if($post->status == 'published')
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success px-2 py-1 rounded-pill small">Đã đăng</span>
+                                    @elseif($post->status == 'draft')
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary px-2 py-1 rounded-pill small">Bản nháp</span>
+                                    @elseif($post->status == 'scheduled')
+                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-2 py-1 rounded-pill small">Hẹn giờ</span>
+                                    @endif
+                                </div>
                             </td>
 
                             <td>
@@ -72,12 +111,13 @@
                                 </span>
                             </td>
 
-                            <td class="text-muted">{{ $post->author }}</td>
-                            <td class="text-muted small">{{ $post->post_date }}</td>
+                            <td class="text-muted small">
+                                {{ date('d/m/Y H:i', strtotime($post->post_date)) }}
+                            </td>
 
                             <td class="text-end pe-4">
                                 @auth
-                                    @if($post->user_id === auth()->id())
+                                    @if($post->user_id === auth()->id() || auth()->user()->role === 'admin')
                                         <div class="d-flex justify-content-end gap-2">
                                             <a href="{{ route('post.edit', $post->id) }}"
                                                class="btn btn-outline-warning btn-sm rounded-pill px-3">
@@ -87,7 +127,7 @@
                                             <form action="{{ route('post.destroy', $post->id) }}"
                                                   method="POST"
                                                   class="d-inline"
-                                                  onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này?')">
+                                                  onsubmit="return confirm('Bạn có chắc muốn đưa bài viết này vào thùng rác?')">
                                                 @csrf
                                                 @method('DELETE')
 
@@ -97,24 +137,26 @@
                                             </form>
                                         </div>
                                     @else
-                                        <span class="badge bg-secondary px-3 py-2 rounded-pill fw-light">Không có quyền</span>
+                                        <a href="{{ route('post.show', $post->slug) }}" class="btn btn-sm btn-light border rounded-pill px-3">Xem</a>
                                     @endif
-                                @else
-                                    <a href="{{ route('post.show', $post->id) }}" class="btn btn-sm btn-light border rounded-pill px-3">Xem</a>
                                 @endauth
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
+                            <td colspan="6" class="text-center py-5 text-muted">
                                 <i class="fas fa-folder-open fa-2x mb-2 d-block text-secondary opacity-50"></i>
-                                Chưa có bài viết nào được tạo.
+                                Không tìm thấy bài viết nào trong mục này.
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        {{ $posts->links() }}
     </div>
 
 </div>

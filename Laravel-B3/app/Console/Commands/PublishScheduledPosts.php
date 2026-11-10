@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class PublishScheduledPosts extends Command
 {
@@ -12,10 +13,10 @@ class PublishScheduledPosts extends Command
 
     public function handle()
     {
-        // Giả sử bạn có cột status và published_at trong bảng posts
-        // Nếu dùng logic post_date hoặc cột status, bạn tinh chỉnh tại đây:
+        $now = Carbon::now();
+
         $count = Post::where('status', 'scheduled')
-            ->where('published_at', '<=', now())
+            ->where('post_date', '<=', $now)
             ->update(['status' => 'published']);
 
         $this->info("Đã xuất bản thành công {$count} bài viết hẹn giờ.");

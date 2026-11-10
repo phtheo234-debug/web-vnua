@@ -24,7 +24,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Chào mừng bạn đến với Blog của tôi!',
+            subject: 'Chào mừng bạn đến với Blog-World!',
         );
     }
 

@@ -123,13 +123,13 @@ class UserController extends Controller
             ->with('message', 'Đã đăng xuất thành công!');
     }
 
-    // Hiển thị form quên mật khẩu
+    // Form quên mật khẩu
     public function showForgotPassword()
     {
         return view('auth.forgot-password');
     }
 
-    // Cấp lại mật khẩu mới qua email
+    // Cấp lại mật khẩu
     public function sendResetPassword(Request $request)
     {
         $request->validate([
@@ -145,8 +145,8 @@ class UserController extends Controller
             return back()->with('error', 'Email không tồn tại trong hệ thống!');
         }
 
-        // Tạo mật khẩu ngẫu nhiên mới
-        $newPassword = Str::random(6);
+        // Tạo mật khẩu ngẫu nhiên
+        $newPassword = Str::random(6);//6 ký tự
         $user->password = Hash::make($newPassword);
         $user->save();
 
@@ -156,48 +156,57 @@ class UserController extends Controller
             'time' => now(),
         ]);
 
-        // Gửi email chứa mật khẩu mới cho người dùng
+        // Gửi email chứa mật khẩu mới
         Mail::raw("Xin chào {$user->name},\n\nMật khẩu mới của bạn là: {$newPassword}\n\nVui lòng đăng nhập lại và đổi mật khẩu mới.", function ($message) use ($user) {
             $message->to($user->email)->subject('Cấp lại mật khẩu mới');
         });
 
         return back()->with('message', 'Mật khẩu mới đã được gửi về email của bạn!');
     }
-    // Hiển thị form đổi mật khẩu
+    //Form đổi mật khẩu
     public function showChangePassword()
     {
         return view('auth.change-password');
     }
 
-    // Cập nhật mật khẩu mới
-    public function updatePassword(Request $request)
+    // Cập nhật thông tin cá nhân và mật khẩu
+    public function updateProfile(Request $request)
     {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-        ], [
-            'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
-            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
-            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
-        ]);
-
         $user = auth()->user();
 
-        // Kiểm tra mật khẩu hiện tại có đúng không
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.']);
+        $request->validate([
+            'name'             => 'required|string|max:255',
+            'email'            => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'current_password' => 'nullable|required_with:password',
+            'password'         => 'nullable|string|min:6|confirmed',
+        ], [
+            'name.required'                 => 'Vui lòng nhập họ tên.',
+            'email.required'                => 'Vui lòng nhập địa chỉ email.',
+            'email.email'                   => 'Email không đúng định dạng.',
+            'email.unique'                  => 'Email này đã được sử dụng bởi tài khoản khác.',
+            'current_password.required_with' => 'Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu.',
+            'password.min'                  => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'password.confirmed'            => 'Xác nhận mật khẩu mới không khớp.',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.'])->withInput();
+            }
+            $user->password = Hash::make($request->password);
         }
 
-        // Cập nhật mật khẩu
-        $user->password = Hash::make($request->new_password);
         $user->save();
 
-        // Ghi log thời gian đổi mật khẩu
-        Log::info('password change success', [
+        // Ghi log sự kiện cập nhật tài khoản thành công
+        Log::info('profile update success', [
             'user' => $user->email,
             'time' => now(),
         ]);
 
-        return back()->with('message', 'Đổi mật khẩu thành công!');
+        return back()->with('message', 'Cập nhật thông tin tài khoản thành công!');
     }
 }

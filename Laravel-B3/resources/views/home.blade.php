@@ -4,7 +4,6 @@
 
 @section('content')
 
-    <!-- Hero Section -->
     <section class="hero-section rounded-4 p-5 mb-5 text-white bg-dark position-relative overflow-hidden shadow">
         <div class="hero-overlay position-relative z-1">
             <span class="badge bg-primary mb-2 px-3 py-2 text-uppercase">Cổng thông tin & Chia sẻ</span>
@@ -34,27 +33,30 @@
                     <h2 class="h4 fw-bold mb-0 text-dark">
                         @if(request('category'))
                             Danh mục: <span class="text-primary">{{ request('category') }}</span>
+                        @elseif(request('tag'))
+                            Tag: <span class="text-primary">#{{ request('tag') }}</span>
                         @else
                             Bài viết mới nhất
                         @endif
                     </h2>
                 </div>
-                @if(request('category'))
+                @if(request('category') || request('tag') || request('search'))
                     <a href="{{ route('home') }}#bai-viet" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
                         <i class="fas fa-arrow-left me-1"></i> Tất cả bài viết
                     </a>
                 @endif
             </div>
 
-            <!-- Form Tìm kiếm & Lọc danh mục -->
+            <!-- Form Tìm kiếm, Lọc danh mục & Lọc theo Tag -->
             <form action="{{ route('home') }}" method="GET" class="mb-4 row g-2">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                        <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Tìm kiếm theo từ khóa..." value="{{ request('search') }}">
+                        <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Tìm kiếm từ khóa..." value="{{ request('search') }}">
                     </div>
                 </div>
-                <div class="col-md-4">
+                
+                <div class="col-md-3">
                     <select name="category" class="form-select">
                         <option value="">Tất cả danh mục</option>
                         @if(isset($categories))
@@ -66,6 +68,11 @@
                         @endif
                     </select>
                 </div>
+
+                <div class="col-md-3">
+                    <input type="text" name="tag" class="form-control" placeholder="Lọc theo tag (VD: php)..." value="{{ request('tag') }}">
+                </div>
+
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100 shadow-sm">Lọc</button>
                 </div>
@@ -84,33 +91,45 @@
                     @foreach($posts as $post)
                         <div class="col-md-6 mb-4">
                             <div class="card h-100 shadow-sm border-0 post-card rounded-4 overflow-hidden hover-shadow transition">
-                                <a href="{{ route('post.show', $post->id) }}" class="post-image-link overflow-hidden">
+                                <a href="{{ route('post.show', $post->slug ?? $post->id) }}" class="post-image-link overflow-hidden">
                                     <img src="{{ $post->image ? asset(str_starts_with($post->image, 'images/') ? $post->image : 'images/' . $post->image) : asset('images/default.jpg') }}" 
                                          alt="{{ $post->title }}" 
                                          class="card-img-top object-fit-cover" style="height: 200px;">
                                 </a>
 
                                 <div class="card-body d-flex flex-column p-4">
+                                    <!-- Danh mục -->
                                     <div class="mb-2">
                                         <span class="badge bg-light text-primary border px-2 py-1 rounded-pill">{{ $post->category }}</span>
                                     </div>
 
                                     <h5 class="card-title">
-                                        <a href="{{ route('post.show', $post->id) }}" class="text-decoration-none text-dark fw-bold">
+                                        <a href="{{ route('post.show', $post->slug ?? $post->id) }}" class="text-decoration-none text-dark fw-bold">
                                             {{ $post->title }}
                                         </a>
                                     </h5>
 
-                                    <p class="card-text text-muted small flex-grow-1">
+                                    <p class="card-text text-muted small mb-2">
                                         {{ Str::limit($post->excerpt, 90) }}
                                     </p>
 
-                                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top small text-muted">
-                                        <span><i class="fas fa-user-circle me-1"></i> {{ $post->author }}</span>
-                                        <span><i class="far fa-calendar-alt me-1"></i> {{ date('d/m/Y', strtotime($post->post_date)) }}</span>
+                                    <!-- Thẻ Tag -->
+                                    @if($post->tags)
+                                        <div class="mb-3 d-flex flex-wrap gap-1">
+                                            @foreach(explode(',', $post->tags) as $t)
+                                                <a href="{{ route('home', ['tag' => trim($t)]) }}#bai-viet" class="badge bg-light text-secondary border text-decoration-none px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                                    #{{ trim($t) }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
+                                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top small text-muted">
+                                        <span><i class="fas fa-user-circle me-1"></i>Tác giả: {{ $post->author }}</span>
+                                        <span><i class="far fa-calendar-alt me-1"></i>Ngày đăng: {{ date('d/m/Y', strtotime($post->post_date)) }}</span>
                                     </div>
 
-                                    <!-- Nút quản lý dành riêng cho chủ nhân bài viết -->
+                                    <!-- Nút quản lý cho chủ nhân bài viết -->
                                     @auth
                                         @if($post->user_id === auth()->id())
                                             <div class="post-actions mt-3 pt-2 border-top d-flex gap-2 position-relative z-2">

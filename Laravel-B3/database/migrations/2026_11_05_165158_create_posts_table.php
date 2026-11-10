@@ -15,18 +15,26 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('category');
             $table->string('title');
             $table->string('slug')->nullable();
             $table->text('excerpt')->nullable();
+            $table->string('tags')->nullable();
+            $table->enum('status', ['draft', 'published', 'scheduled'])->default('published');
             $table->string('author');
-            $table->date('post_date');
+            $table->dateTime('post_date');
             $table->string('image')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
     }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('posts');

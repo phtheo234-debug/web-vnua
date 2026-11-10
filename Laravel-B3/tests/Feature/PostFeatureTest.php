@@ -65,6 +65,7 @@ class PostFeatureTest extends TestCase
             'excerpt' => 'Nội dung tóm tắt kiểm thử',
             'author' => $user->name,
             'post_date' => '2026-10-30',
+            'status' => 'published',
         ]);
 
         $this->assertDatabaseHas('posts', ['title' => 'Bài viết kiểm thử tự động']);

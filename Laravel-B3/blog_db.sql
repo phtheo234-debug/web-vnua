@@ -142,6 +142,7 @@ DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `category` varchar(255) NOT NULL,
+  `tags` varchar(255) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) DEFAULT NULL,
   `excerpt` text DEFAULT NULL,
@@ -159,12 +160,12 @@ CREATE TABLE `posts` (
 
 /*Data for the table `posts` */
 
-insert  into `posts`(`id`,`category`,`title`,`slug`,`excerpt`,`author`,`post_date`,`image`,`user_id`,`deleted_at`,`created_at`,`updated_at`) values 
-(6,'Ẩm thực','Buổi sáng chan hòa cùng ly coffee',NULL,'Âm thanh của Hà Nội tươi mới cùng với ly coffee sánh mịn ngọt ngào tạo nên một cảm giác thư giãn.','Thảo','2026-11-05','20261105172651_6aecbc5b52d1f.jpg',10,NULL,'2026-11-05 17:26:51','2026-11-05 17:26:51'),
-(7,'Cảm hứng','Ngày bình yên',NULL,'Không phải đi đâu xa để học hỏi kiến thức. Đôi khi xung quanh ta còn nhiều điều tưởng giản dị mà khó có được ở nơi khác','Phương Anh','2026-11-05','20261105172927_6aecbcf7f222d.jpg',10,NULL,'2026-11-05 17:29:27','2026-11-05 17:29:27'),
-(8,'Du lịch','Một ngày bình yên ở Đà Lạt',NULL,'Đi tới Đà Lạt tưởng chừng đông đúc bộn bề nhưng nhịp sống nơi đây lại diễn ra một cách hài hòa như một bản tình ca ngọt ngào','Duy Nam','2026-11-05','20261105173126_6aecbd6ef2651.jpg',10,NULL,'2026-11-05 17:31:26','2026-11-05 17:31:26'),
-(9,'Phong cách sống','Sống hết mình, không theo quy chuẩn xã hội',NULL,'Sao phải sống dập khuôn khi cuộc đời của ta chính là của ta! Tự tin, bản lĩnh thì sẽ có cuộc sống tràn đầy niềm vui!','Nhật Ánh','2026-11-06','20261105173425_6aecbe219992b.jpg',10,NULL,'2026-11-05 17:34:25','2026-11-05 17:34:25'),
-(10,'Phong cách sống','vip',NULL,'abc','Thảo','2026-11-05','20261105180409_6aecc519ecec3.jpg',11,NULL,'2026-11-05 18:04:09','2026-11-05 18:04:09');
+insert  into `posts`(`id`,`category`,`tags`,`title`,`slug`,`excerpt`,`author`,`post_date`,`image`,`user_id`,`deleted_at`,`created_at`,`updated_at`) values 
+(6,'Ẩm thực',NULL,'Buổi sáng chan hòa cùng ly coffee',NULL,'Âm thanh của Hà Nội tươi mới cùng với ly coffee sánh mịn ngọt ngào tạo nên một cảm giác thư giãn.','Thảo','2026-11-05','20261105172651_6aecbc5b52d1f.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:26:51','2026-11-08 17:42:17'),
+(7,'Cảm hứng',NULL,'Ngày bình yên',NULL,'Không phải đi đâu xa để học hỏi kiến thức. Đôi khi xung quanh ta còn nhiều điều tưởng giản dị mà khó có được ở nơi khác','Phương Anh','2026-11-05','20261105172927_6aecbcf7f222d.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:29:27','2026-11-08 17:42:17'),
+(8,'Du lịch',NULL,'Một ngày bình yên ở Đà Lạt',NULL,'Đi tới Đà Lạt tưởng chừng đông đúc bộn bề nhưng nhịp sống nơi đây lại diễn ra một cách hài hòa như một bản tình ca ngọt ngào','Duy Nam','2026-11-05','20261105173126_6aecbd6ef2651.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:31:26','2026-11-08 17:42:17'),
+(9,'Phong cách sống',NULL,'Sống hết mình, không theo quy chuẩn xã hội',NULL,'Sao phải sống dập khuôn khi cuộc đời của ta chính là của ta! Tự tin, bản lĩnh thì sẽ có cuộc sống tràn đầy niềm vui!','Nhật Ánh','2026-11-06','20261105173425_6aecbe219992b.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:34:25','2026-11-08 17:42:17'),
+(10,'Phong cách sống',NULL,'vip',NULL,'abc','Thảo','2026-11-05','20261105180409_6aecc519ecec3.jpg',11,'2026-11-08 17:42:17','2026-11-05 18:04:09','2026-11-08 17:42:17');
 
 /*Table structure for table `users` */
 

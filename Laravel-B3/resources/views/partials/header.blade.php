@@ -2,17 +2,14 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light px-0 py-3">
 
-            <!-- Brand Logo -->
             <a class="navbar-brand brand fw-bold text-primary fs-4 tracking-wide" href="{{ url('/') }}">
                 <i class="fas fa-globe-americas me-1"></i> BLOG-WORLD
             </a>
 
-            <!-- Toggler Mobile -->
             <button class="navbar-toggler border-0 shadow-none" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Navbar Links -->
             <div class="collapse navbar-collapse" id="mainMenu">
                 <ul class="navbar-nav mx-auto align-items-lg-center gap-2">
                     <li class="nav-item">
@@ -29,17 +26,29 @@
                     </li>
                 </ul>
 
-                <!-- Auth Section -->
                 <ul class="navbar-nav ml-auto align-items-lg-center gap-2 mt-3 mt-lg-0">
                     @auth
-                        <!-- Hiển thị tên người dùng -->
                         <li class="nav-item d-flex align-items-center me-2 text-muted small d-none d-lg-block">
-                            <span>👋 Chào, <strong>{{ auth()->user()->name }}</strong></span>
+                            <span>Chào, <strong>{{ auth()->user()->name }}</strong></span>
+                        </li>
+
+                        @if(auth()->user()->role === 'admin')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.peculiar.dashboard') }}" class="btn btn-sm btn-dark px-3 rounded-pill shadow-sm">
+                                    <i class="fas fa-user-shield me-1"></i> Trang quản trị
+                                </a>
+                            </li>
+                        @endif
+
+                        <li class="nav-item">
+                            <a href="{{ route('post.index') }}" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                                <i class="fas fa-folder-open me-1"></i> Quản lý bài viết cá nhân
+                            </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('password.change') }}" class="btn btn-sm btn-outline-secondary px-3 rounded-pill">
-                                <i class="fas fa-key me-1"></i> Đổi mật khẩu
+                                <i class="fas fa-key me-1"></i> Thông tin & mật khẩu
                             </a>
                         </li>
                         <li class="nav-item">

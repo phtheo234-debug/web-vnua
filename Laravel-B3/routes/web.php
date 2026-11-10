@@ -1,37 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ProductController;
-use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
-use App\Models\User;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\VerifyEmail;
-use App\Notifications\VerifyEmail as VerifyEmailNotification;
-use Illuminate\Support\Facades\Notification;
-use App\Jobs\SendMailJob;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AdminController;
 
-Route::middleware('auth')->group(function () {
-    // Gửi bình luận cho bài viết
-    Route::post('/posts/{postId}/comments', [CommentController::class, 'store'])->name('comments.store');
-    
-    // Xóa bình luận
-    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
-});
-
-Route::get('/mail', function(){
-    SendMailJob::dispatchAfterResponse();
-    return 'Email sent after 1 minute';
-});
-
-// Trang chủ trỏ về danh sách bài viết
+// 1. Trang chủ trỏ về danh sách bài viết
 Route::get('/', [PostController::class, 'index'])->name('home');
 
-// Nhóm route dành cho khách (chưa đăng nhập)
+// 2. Nhóm route dành cho khách (chưa đăng nhập)
 Route::middleware('guest')->group(function () {
     Route::get('/register', [UserController::class, 'showRegister'])->name('register');
     Route::post('/register', [UserController::class, 'register']);
@@ -48,37 +26,56 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-// Nhóm route yêu cầu đã đăng nhập (User / Member)
-Route::middleware('auth')->group(function () {
+// 3. Nhóm route yêu cầu đã đăng nhập
+Route::middleware(['auth'])->group(function () {
+    // Đăng xuất
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-    Route::get('/change-password', [UserController::class, 'showChangePassword'])->name('password.change');
-    Route::post('/change-password', [UserController::class, 'updatePassword'])->name('password.update');
+
+    // Quản lý hồ sơ cá nhân & Đổi mật khẩu
+    Route::get('/profile/edit', [UserController::class, 'showChangePassword'])->name('password.change');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('password.update');
+
+    // Gửi & Xóa bình luận
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
-// Nhóm route quản lý Bài viết (Posts)
+// 4. Khu vực dành riêng cho Quản trị viên (Admin)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.peculiar.')->group(function () {
+    // Thống kê tổng quan
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Quản lý bài viết vi phạm
+    Route::get('/posts', [AdminController::class, 'posts'])->name('posts');
+    Route::delete('/posts/{id}', [AdminController::class, 'deletePost'])->name('posts.delete');
+
+    // Quản lý bình luận vi phạm
+    Route::get('/comments', [AdminController::class, 'comments'])->name('comments');
+    Route::delete('/comments/{id}', [AdminController::class, 'deleteComment'])->name('comments.delete');
+});
+
+// 5. Nhóm route quản lý Bài viết (Posts) của người dùng
 Route::prefix('post')->name('post.')->group(function () {
     
-    // Xem danh sách bài viết (Công khai)
-    Route::get('/', [PostController::class, 'index'])->name('index');
-    
-    // Đã xóa bỏ Route::get('/user2', ...) vì không còn dùng hàm user2()
-
-    // Các tính năng yêu cầu đăng nhập
+    // Các tính năng quản lý bài viết bắt buộc phải ĐĂNG NHẬP
     Route::middleware('auth')->group(function () {
+        // Trang quản lý bài viết CÁ NHÂN (Truy cập vào /post)
+        Route::get('/', [PostController::class, 'index'])->name('index');
+
         Route::get('/create', [PostController::class, 'create'])->name('create');
         Route::post('/', [PostController::class, 'store'])->name('store');
 
-        // Thùng rác và khôi phục/xóa vĩnh viễn
+        // Thùng rác và khôi phục / xóa vĩnh viễn
         Route::get('/trashed', [PostController::class, 'trashed'])->name('trashed');
         Route::patch('/{id}/restore', [PostController::class, 'restore'])->name('restore');
         Route::delete('/{id}/force-delete', [PostController::class, 'forceDelete'])->name('forceDelete');
 
-        // Chỉnh sửa, cập nhật và xóa mềm
+        // Chỉnh sửa, cập nhật và xóa bài viết
         Route::get('/{id}/edit', [PostController::class, 'edit'])->name('edit');
         Route::put('/{id}', [PostController::class, 'update'])->name('update');
         Route::delete('/{id}', [PostController::class, 'destroy'])->name('destroy');
     });
 
-    // Xem chi tiết bài viết (Đặt ở cuối để không xung đột với các route dạng /create, /trashed)
-    Route::get('/{id}', [PostController::class, 'show'])->name('show');
+    // Xem chi tiết bài viết công khai (đặt ở dưới cùng để tránh xung đột với các route trên)
+    Route::get('/{slug}', [PostController::class, 'show'])->name('show');
 });
