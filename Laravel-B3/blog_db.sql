@@ -16,26 +16,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`blog_db` /*!40100 DEFAULT CHARACTER SET
 
 USE `blog_db`;
 
-/*Table structure for table `categories` */
-
-DROP TABLE IF EXISTS `categories`;
-
-CREATE TABLE `categories` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Data for the table `categories` */
-
-insert  into `categories`(`id`,`name`,`created_at`,`updated_at`) values 
-(1,'Du lịch','2026-11-06 00:01:21','2026-11-06 00:01:21'),
-(2,'Phong cách sống','2026-11-06 00:01:21','2026-11-06 00:01:21'),
-(3,'Ẩm thực','2026-11-06 00:01:21','2026-11-06 00:01:21'),
-(4,'Cảm hứng','2026-11-06 00:01:21','2026-11-06 00:01:21');
-
 /*Table structure for table `comments` */
 
 DROP TABLE IF EXISTS `comments`;
@@ -52,13 +32,21 @@ CREATE TABLE `comments` (
   KEY `comments_user_id_foreign` (`user_id`),
   CONSTRAINT `comments_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `comments` */
 
 insert  into `comments`(`id`,`post_id`,`user_id`,`content`,`created_at`,`updated_at`) values 
-(2,9,11,'tuyệt vời','2026-11-05 17:59:51','2026-11-05 17:59:51'),
-(3,10,11,'yes','2026-11-05 18:04:29','2026-11-05 18:04:29');
+(2,9,1,'yep','2026-11-11 00:49:31','2026-11-11 00:49:31'),
+(3,9,1,'yes','2026-11-11 01:04:20','2026-11-11 01:04:20'),
+(5,7,10,'Good!','2026-11-11 01:21:26','2026-11-11 01:21:26'),
+(6,6,10,'tuyệt vời!','2026-11-11 01:22:17','2026-11-11 01:22:17'),
+(7,14,11,'Ngon quá!','2026-11-11 01:31:14','2026-11-11 01:31:14'),
+(8,11,11,'Idol','2026-11-11 01:31:37','2026-11-11 01:31:37'),
+(9,9,11,'tuyệt vời quá','2026-11-11 01:32:04','2026-11-11 01:32:04'),
+(10,7,11,'CHẤT','2026-11-11 01:33:28','2026-11-11 01:33:28'),
+(12,12,11,'ĐƯỢC ĐẤY!!!','2026-11-11 01:34:14','2026-11-11 01:34:14'),
+(13,12,11,'hay','2026-11-11 01:34:22','2026-11-11 01:34:22');
 
 /*Table structure for table `failed_jobs` */
 
@@ -78,6 +66,33 @@ CREATE TABLE `failed_jobs` (
 
 /*Data for the table `failed_jobs` */
 
+/*Table structure for table `jobs` */
+
+DROP TABLE IF EXISTS `jobs`;
+
+CREATE TABLE `jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `jobs` */
+
+insert  into `jobs`(`id`,`queue`,`payload`,`attempts`,`reserved_at`,`available_at`,`created_at`) values 
+(1,'default','{\"uuid\":\"669db528-f4cd-46bc-8dec-23bdc1fc9289\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:5;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"123@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794334886,1794334886),
+(2,'default','{\"uuid\":\"b138916c-8d4c-4fe8-a3fa-10c4c3ce1b5b\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:6;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"123@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794334937,1794334937),
+(3,'default','{\"uuid\":\"b1c77db6-3dab-49dc-a326-861d4007d3f3\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:8;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"234@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794335497,1794335497),
+(4,'default','{\"uuid\":\"aef1cfd8-4cee-4368-bf5e-7361c762e86d\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:9;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"123@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794335524,1794335524),
+(5,'default','{\"uuid\":\"76545d5b-8cdf-4d85-8ba1-2491ab6983e5\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:10;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"123@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794335608,1794335608),
+(6,'default','{\"uuid\":\"e12ab9f8-361e-4566-8bb7-f561f13eedda\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:12;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"234@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794335654,1794335654),
+(7,'default','{\"uuid\":\"838739d1-69b2-43fd-8c0f-c0387620db91\",\"displayName\":\"App\\\\Mail\\\\CommentNotificationMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":15:{s:8:\\\"mailable\\\";O:32:\\\"App\\\\Mail\\\\CommentNotificationMail\\\":3:{s:7:\\\"comment\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:18:\\\"App\\\\Models\\\\Comment\\\";s:2:\\\"id\\\";i:13;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:13:\\\"234@gmail.com\\\";}}s:6:\\\"mailer\\\";s:3:\\\"log\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:3:\\\"job\\\";N;}\"}}',0,NULL,1794335662,1794335662);
+
 /*Table structure for table `migrations` */
 
 DROP TABLE IF EXISTS `migrations`;
@@ -87,7 +102,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `migrations` */
 
@@ -99,7 +114,8 @@ insert  into `migrations`(`id`,`migration`,`batch`) values
 (5,'2026_11_05_155402_add_slug_to_posts_table',1),
 (6,'2026_11_05_164932_add_role_to_users_table',1),
 (7,'2026_11_05_165158_create_posts_table',1),
-(8,'2026_11_05_165205_create_comments_table',1);
+(8,'2026_11_05_165205_create_comments_table',1),
+(9,'2026_11_11_011605_create_jobs_table',2);
 
 /*Table structure for table `password_resets` */
 
@@ -141,31 +157,35 @@ DROP TABLE IF EXISTS `posts`;
 
 CREATE TABLE `posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
   `category` varchar(255) NOT NULL,
-  `tags` varchar(255) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) DEFAULT NULL,
   `excerpt` text DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `status` enum('draft','published','scheduled') NOT NULL DEFAULT 'published',
   `author` varchar(255) NOT NULL,
-  `post_date` date NOT NULL,
+  `post_date` datetime NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `posts_user_id_foreign` (`user_id`),
   CONSTRAINT `posts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `posts` */
 
-insert  into `posts`(`id`,`category`,`tags`,`title`,`slug`,`excerpt`,`author`,`post_date`,`image`,`user_id`,`deleted_at`,`created_at`,`updated_at`) values 
-(6,'Ẩm thực',NULL,'Buổi sáng chan hòa cùng ly coffee',NULL,'Âm thanh của Hà Nội tươi mới cùng với ly coffee sánh mịn ngọt ngào tạo nên một cảm giác thư giãn.','Thảo','2026-11-05','20261105172651_6aecbc5b52d1f.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:26:51','2026-11-08 17:42:17'),
-(7,'Cảm hứng',NULL,'Ngày bình yên',NULL,'Không phải đi đâu xa để học hỏi kiến thức. Đôi khi xung quanh ta còn nhiều điều tưởng giản dị mà khó có được ở nơi khác','Phương Anh','2026-11-05','20261105172927_6aecbcf7f222d.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:29:27','2026-11-08 17:42:17'),
-(8,'Du lịch',NULL,'Một ngày bình yên ở Đà Lạt',NULL,'Đi tới Đà Lạt tưởng chừng đông đúc bộn bề nhưng nhịp sống nơi đây lại diễn ra một cách hài hòa như một bản tình ca ngọt ngào','Duy Nam','2026-11-05','20261105173126_6aecbd6ef2651.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:31:26','2026-11-08 17:42:17'),
-(9,'Phong cách sống',NULL,'Sống hết mình, không theo quy chuẩn xã hội',NULL,'Sao phải sống dập khuôn khi cuộc đời của ta chính là của ta! Tự tin, bản lĩnh thì sẽ có cuộc sống tràn đầy niềm vui!','Nhật Ánh','2026-11-06','20261105173425_6aecbe219992b.jpg',10,'2026-11-08 17:42:17','2026-11-05 17:34:25','2026-11-08 17:42:17'),
-(10,'Phong cách sống',NULL,'vip',NULL,'abc','Thảo','2026-11-05','20261105180409_6aecc519ecec3.jpg',11,'2026-11-08 17:42:17','2026-11-05 18:04:09','2026-11-08 17:42:17');
+insert  into `posts`(`id`,`user_id`,`category`,`title`,`slug`,`excerpt`,`tags`,`status`,`author`,`post_date`,`image`,`deleted_at`,`created_at`,`updated_at`) values 
+(6,1,'Du lịch','Chuyến du lịch Đà Nẵng','chuyen-du-lich-da-nang-1794332311','Một chuyến du lịch bổ ích tại Đà Nẵng - vùng đất đầy tươi mới và hấp dẫn với điểm đến là cầu Rồng uy nga tráng lệ nơi phồn hoa tấp nập.','DULICH, Dulich, dulich, DANANG, Danang, DaNang','published','Thảo','2026-11-11 00:38:31','20261111003831_6af356970ed55.jpg',NULL,'2026-11-11 00:38:31','2026-11-11 00:38:31'),
+(7,1,'Phong cách sống','Sống hết mình','song-het-minh-1794332500','Cứ sống hết mình với đam mê cháy bỏng đi! Những quy tắc sống của cuộc đời đã vốn không hề tồn tại, đừng gò bó bản thân mà cứ tiếp tục bước tới những điều bạn muốn làm nhé!','PHONGCACHSONG, Phongcachsong, phongcachsong, pcs','published','Phương Thảo','2026-11-11 00:41:40','20261111004140_6af35754f1552.jpg',NULL,'2026-11-11 00:41:41','2026-11-11 00:41:41'),
+(8,1,'Ẩm thực','Cà phê sáng tại Hà Nội','ca-phe-sang-tai-ha-noi-1794332702','Một buổi sáng trong lành bên khí trời ấm áp của mùa thu Hà Nội...Thưởng thức hương vị cà phê đậm đà bản sắc ta mới thấy cuộc sống này thật đáng sống!','AMTHUC, Amthuc, amthuc, caphe, CAPHE, Caphe, Coffee, coffee, COFFEE','published','Tạ Phương Thảo','2026-11-11 00:45:02','20261111004502_6af3581e96318.jpg',NULL,'2026-11-11 00:45:02','2026-11-11 00:45:02'),
+(9,1,'Cảm hứng','Cuộc sống quanh ta','cuoc-song-quanh-ta-1794332903','Đôi khi ta cần chậm lại để ngắm nhìn cảnh vật hiện hữu quanh chúng ta. Một cảnh đẹp yên bình mà quá đỗi quen thuộc chính là niềm cảm hứng bất tận cho việc sáng tạo nghệ thuật đặc trưng của chính mình.','CAMHUNG, Camhung, camhung','published','Thao','2026-11-11 00:48:23','20261111004823_6af358e7cd8ec.jpg',NULL,'2026-11-11 00:48:23','2026-11-11 00:48:23'),
+(11,10,'Du lịch','Du Lịch Hàn Quốc','du-lich-han-quoc-1794334209','Khám phá một Seoul sôi động nhưng không kém phần cổ kính, Nami lãng mạn với hàng cây ngân hạnh, Jeju thơ mộng với những cánh đồng hoa trải dài ngút ngàn…chắc chắn sẽ mang đến cho bạn những trải nghiệm tuyệt vời, và không thề nào quên.','DULICH, dulich, HANQUOC, Korea, hanquoc, KOREA','published','Duy Nam','2026-11-11 01:10:09','20261111011009_6af35e01ea88f.jpg',NULL,'2026-11-11 01:10:09','2026-11-11 01:10:09'),
+(12,10,'Phong cách sống','Lối sống tối giản','loi-song-toi-gian-1794334348','Toàn bộ trang phục của Sasaki gói gọn trong khoảng hơn 10 món đồ bao gồm áo sơ mi, quần jean, chiếc jogger thật thoải mái, vài chiếc áo khoác cho các loại thời tiết khác nhau. Sự đơn giản đôi khi khiến người ta được trở thành chính là mình và cũng không phải băn khoăn về phục sức.','pcs, phongcachsong, PHONGCACHSONG, songtoigian, SONGTOIGIAN','published','CR7','2026-11-11 01:12:28','20261111011228_6af35e8c77f66.jpg',NULL,'2026-11-11 01:12:28','2026-11-11 01:12:28'),
+(14,11,'Ẩm thực','Phở - nét tinh túy của ẩm thực Hà Nội','pho-net-tinh-tuy-cua-am-thuc-ha-noi-1794335265','Phở không chỉ là món ăn sáng quen thuộc của người Việt mà còn là biểu tượng của ẩm thực Hà Nội được phục vụ cả ngày tại nhiều quán ăn lớn nhỏ. Điểm đặc trưng làm nên hương vị khó quên của phở Hà Nội nằm ở phần nước dùng được ninh từ xương bò trong nhiều giờ, hòa quyện cùng hương thơm dịu nhẹ của quế và hồi. Tô phở đầy đủ bao gồm bánh phở mềm, thịt bò thái mỏng, hành lá và các loại rau thơm rắc đều phía trên. Vị ngọt thanh của nước, vị béo nhẹ từ thịt cùng mùi thơm của rau gia vị khiến thực khách chỉ cần thử một lần cũng đủ cảm nhận được sự tinh tế trong món ăn trứ danh này.','AMTHUC, amthuc, Amthuc, PHO, pho, HANOI, hanoi','published','Phương Anh','2026-11-11 01:27:45','20261111012745_6af36221de653.jpeg',NULL,'2026-11-11 01:27:45','2026-11-11 01:27:45'),
+(15,11,'Cảm hứng','Truyền cảm hứng','truyen-cam-hung-1794335371','Hiệu quả công việc không chỉ đến từ sức mạnh chuyên môn mà còn phụ thuộc phần lớn còn sức mạnh tinh thần. Và một trong những yếu tố mang đến sức mạnh tinh thần này chính là khả năng truyền cảm hứng từ người lãnh đạo.','CAMHUNG, camhung, truyencamhung','published','Nhật Ánh','2026-11-11 01:29:31','20261111012931_6af3628b23604.jpg',NULL,'2026-11-11 01:29:31','2026-11-11 01:29:31');
 
 /*Table structure for table `users` */
 
@@ -188,8 +208,9 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`name`,`email`,`role`,`email_verified_at`,`password`,`remember_token`,`created_at`,`updated_at`) values 
-(10,'Quản Trị Viên','admin@gmail.com','admin',NULL,'$2y$10$QeRwtHHTg8oDv2V4z8noY.AMxRCCOTmfYhyZJf72nGtMltkP1BV2u',NULL,'2026-11-05 17:23:18','2026-11-05 17:23:18'),
-(11,'Thảo','123@gmail.com','member',NULL,'$2y$10$3ju29IHGF2N1cKK00b8P2.Ba8eg9Qqd5dg/IY32W0NRfO/wxE8DvW',NULL,'2026-11-05 17:59:27','2026-11-05 17:59:27');
+(1,'Admin Thảo','123@gmail.com','admin',NULL,'$2y$10$dc9HBZeYHMScYrE7.wzKau4Z63sGZsW/mZ2oahox8bSSOMLKX4NqG',NULL,'2026-11-11 00:31:58','2026-11-11 00:31:58'),
+(10,'CR7','234@gmail.com','member',NULL,'$2y$10$MMICnjp/AUtoXtjwN1V6eeKBWn7YqZOVq8peins1ez4ui7DWMKyd6',NULL,'2026-11-11 01:06:52','2026-11-11 01:06:52'),
+(11,'M10','345@gmail.com','member',NULL,'$2y$10$9DUT21/TIS8TF0qj8easkOSvXaJyypcRQl4YwIp/k1/Npr4K0G1IG',NULL,'2026-11-11 01:24:16','2026-11-11 01:24:16');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
